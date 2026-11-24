@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>智能家居控制</title>
+<style>
+  :root{font:16px/1.5 system-ui,sans-serif;color:#14242a;background:#f0f4f3}
+  *{box-sizing:border-box}
+  main{max-width:56rem;margin:auto;padding:clamp(1rem,4vw,2.75rem)}
+  header{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+  h1{margin:0;font-size:clamp(1.4rem,5vw,2rem)}
+  h2{margin:0;font-size:1.15rem}
+  #connection{font-weight:600;color:#435a62}
+  #connection.online{color:#126353}
+  .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin:1.25rem 0}
+  .metrics div,section{background:white;border:1px solid #d4e0de;border-radius:.65rem;padding:1rem}
+  .metrics dt,.facts dt{color:#435a62;font-size:.9rem}
+  .metrics dd{margin:.35rem 0 0;font-size:clamp(1.15rem,4vw,1.65rem);font-variant-numeric:tabular-nums}
+  .facts{margin:1rem 0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.75rem}
+  .facts dd{margin:.2rem 0 0;font-weight:600}
+  .actions,.settings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem}
+  fieldset{border:0;margin:0;padding:0;min-width:0}
+  legend,label{font-size:.88rem;color:#435a62;padding:0;margin-bottom:.4rem}
+  .buttons,.field{display:flex;flex-wrap:wrap;gap:.4rem}
+  button,input{font:inherit;border:1px solid #839e98;border-radius:.35rem;padding:.42rem .65rem}
+  button{color:#0c4c40;background:#eff7f4;cursor:pointer}
+  button:disabled{opacity:.53;cursor:default}
+  button:focus-visible,input:focus-visible{outline:2px solid #197563;outline-offset:2px}
+  input{width:6rem;color:inherit}
+  .settings{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:.85rem}
+  .settings label{display:block}
+  #notice{margin:.8rem 0 0;min-height:1.5rem;color:#164f43}
+  .thresholds{margin-top:1rem}
+  @media(max-width:38rem){
+    .metrics{gap:.4rem}
+    .metrics div{padding:.65rem}
+    .facts,.actions,.settings{grid-template-columns:repeat(2,minmax(0,1fr))}
+  }
+</style>
+<main>
+  <header>
+    <h1>智能家居控制</h1>
+    <span id="connection" role="status">等待设备</span>
+  </header>
+  <dl class="metrics" aria-label="传感器读数">
+    <div><dt>温度</dt><dd id="temp">—</dd></div>
+    <div><dt>湿度</dt><dd id="humidity">—</dd></div>
+    <div><dt>相对亮度</dt><dd id="light">—</dd></div>
+  </dl>
+  <section aria-labelledby="controlTitle">
+    <h2 id="controlTitle">设备控制</h2>
+    <dl class="facts">
+      <div><dt>模式</dt><dd id="mode">—</dd></div>
+      <div><dt>风扇指令</dt><dd id="fan">—</dd></div>
+      <div><dt>窗帘位置指令</dt><dd id="curtain">—</dd></div>
+      <div><dt>最近设置来源</dt><dd id="source">—</dd></div>
+    </dl>
+    <div class="actions">
+      <fieldset><legend>模式</legend><div class="buttons">
+        <button data-op="1" data-value="0" disabled>自动</button>
+        <button data-op="1" data-value="1" disabled>手动</button>
+      </div></fieldset>
+      <fieldset><legend>风扇（手动模式）</legend><div class="buttons">
+        <button data-op="2" data-value="1" data-manual disabled>开启</button>
+        <button data-op="2" data-value="0" data-manual disabled>关闭</button>
+      </div></fieldset>
+      <fieldset><legend>窗帘（手动模式）</legend><div class="buttons">
+        <button data-op="3" data-value="1" data-manual disabled>开帘</button>
+        <button data-op="3" data-value="2" data-manual disabled>关帘</button>
+      </div></fieldset>
+    </div>
+    <p id="notice" role="status"></p>
+  </section>
+  <section class="thresholds" aria-labelledby="thresholdTitle">
+    <h2 id="thresholdTitle">自动阈值</h2>
+    <div class="settings">
+      <form data-op="4">
+        <label for="heat">风扇开启温度（°C）</label>
+        <div class="field"><input id="heat" type="number" min="10" max="60" step="1" required disabled>
+        <button type="submit" disabled>设置</button></div>
+        <div id="heatCurrent">—</div>
+      </form>
+      <form data-op="5">
+        <label for="brightness">关帘亮度（0–4095）</label>
+        <div class="field"><input id="brightness" type="number" min="600" max="4000" step="100" required disabled>
+        <button type="submit" disabled>设置</button></div>
+        <div id="lightCurrent">—</div>
+      </form>
+    </div>
+  </section>
+</main>
+<script>
+  const el = id => document.getElementById(id);
+  const text = (id, value) => { el(id).textContent = value; };
+  const controls = Array.from(document.querySelectorAll("button, input"));
+  const resultText = [
+    "STM32 已确认", "参数超出范围", "STM32 不支持此操作", "设备正在处理另一条命令",
+    "请先切换到手动模式", "本地正在操作，请稍后重试", "连接会话已变化，请重试",
+    "STM32 已接收，等待舵机动作间隔", "STM32 暂不可用", "应答超时，请核对设备状态"
+  ];
+  const errors = {
+    offline: "设备离线", busy: "正在等待上一条命令应答", interrupted: "连接中断，命令结果未知",
+    timeout: "应答超时，命令结果未知", invalid: "参数无效", authentication: "请先登录"
+  };
+  const positions = ["待命", "开", "关"];
+  let state = null;
+  let sending = false;
+
+  function refreshControls() {
+    for (const control of controls) {
+      control.disabled = !state || sending || (control.hasAttribute("data-manual") && !(state.flags & 4));
+    }
+  }
+
+  function render(nextState) {
+    state = nextState;
+    text("connection", state ? "STM32 在线" : "设备离线");
+    el("connection").classList.toggle("online", Boolean(state));
+    if (!state) {
+      for (const id of ["temp", "humidity", "light", "mode", "fan", "curtain", "source", "heatCurrent", "lightCurrent"]) {
+        text(id, "—");
+      }
+    } else {
+      text("temp", state.flags & 1 ? `${(state.temperature_tenths / 10).toFixed(1)} °C` : "无有效读数");
+      text("humidity", state.flags & 1 ? `${(state.humidity_tenths / 10).toFixed(1)} %` : "无有效读数");
+      text("light", state.flags & 2 ? `${state.light_level} / 4095` : "无有效读数");
+      text("mode", state.flags & 4 ? "手动" : "自动");
+      text("fan", state.flags & 8 ? "开" : "关");
+      const pending = state.curtain !== state.curtain_target ? ` → ${positions[state.curtain_target]}` : "";
+      text("curtain", positions[state.curtain] + pending);
+      text("source", ["默认设置", "本地按键", "网页命令"][state.source]);
+      text("heatCurrent", `开启 ${state.fan_on_tenths / 10} °C · 停止 ${state.fan_on_tenths / 10 - 2} °C`);
+      text("lightCurrent", `关帘 ${state.close_level} · 开帘 ${state.close_level - 500}`);
+    }
+    refreshControls();
+  }
+
+  async function poll() {
+    try {
+      const response = await fetch("/api/state", {cache: "no-store", signal: AbortSignal.timeout(3000)});
+      if (!response.ok) throw new Error();
+      const data = await response.json();
+      render(data.online ? data.state : null);
+    } catch {
+      render(null);
+    } finally {
+      setTimeout(poll, 750);
+    }
+  }
+
+  async function send(op, value) {
+    if (sending || !state) return;
+    sending = true;
+    refreshControls();
+    text("notice", "等待 STM32 应答…");
+    try {
+      const response = await fetch("/api/command", {
+        method: "POST",
+        headers: {"Content-Type": "application/json", "X-Smart-Home": "1"},
+        body: JSON.stringify({op, value}),
+        signal: AbortSignal.timeout(4500)
+      });
+      const result = await response.json();
+      if (response.ok) {
+        text("notice", result.result === 0 && !result.confirmed ?
+          "命令结果未获 STM32 确认" : (resultText[result.result] ?? "未知应答"));
+      } else {
+        text("notice", errors[result.error] ?? "操作未完成");
+      }
+    } catch {
+      text("notice", "连接中断，命令结果未知");
+    } finally {
+      sending = false;
+      refreshControls();
+    }
+  }
+
+  for (const button of document.querySelectorAll("button[data-op]")) {
+    button.addEventListener("click", () => send(Number(button.dataset.op), Number(button.dataset.value)));
+  }
+  for (const form of document.querySelectorAll("form[data-op]")) {
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+      const op = Number(form.dataset.op);
+      const value = Number(form.querySelector("input").value);
+      send(op, op === 4 ? value * 10 : value);
+    });
+  }
+  poll();
+</script>
+</html>

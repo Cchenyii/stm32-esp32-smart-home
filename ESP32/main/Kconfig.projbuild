@@ -1,0 +1,82 @@
+menu "Edge monitoring terminal"
+
+config EDGE_DEVICE_ID
+    string "Device ID (letters, digits, hyphen, underscore)"
+    default "edge-01"
+
+config EDGE_SIMULATOR
+    bool "Simulate a sensor node on this ESP32"
+    depends on !EDGE_HOME_MQTT
+    default n
+
+config EDGE_HOME_MQTT
+    bool "Smart-home STM32 with MQTT"
+    default n
+
+config EDGE_HOME_THINGSBOARD
+    bool "Use ThingsBoard Cloud over MQTT/TLS"
+    depends on EDGE_HOME_MQTT
+    select MBEDTLS_CERTIFICATE_BUNDLE
+    select MBEDTLS_HAVE_TIME
+    select MBEDTLS_HAVE_TIME_DATE
+    default n
+
+config EDGE_TB_HOST
+    string "ThingsBoard Cloud MQTT hostname"
+    depends on EDGE_HOME_THINGSBOARD
+    default "mqtt.thingsboard.cloud"
+
+config EDGE_TB_DEVICE_TOKEN
+    string "ThingsBoard device access token (local sdkconfig, never commit)"
+    depends on EDGE_HOME_THINGSBOARD
+    default ""
+
+config EDGE_TB_NTP_SERVER
+    string "NTP server for TLS certificate time validation"
+    depends on EDGE_HOME_THINGSBOARD
+    default "pool.ntp.org"
+
+config EDGE_MQTT_PORT
+    int "MQTT broker TCP port"
+    depends on EDGE_HOME_MQTT && !EDGE_HOME_THINGSBOARD
+    range 1 65535
+    default 1883
+
+config EDGE_MQTT_USER
+    string "MQTT username (local sdkconfig)"
+    depends on EDGE_HOME_MQTT && !EDGE_HOME_THINGSBOARD
+    default ""
+
+config EDGE_MQTT_PASSWORD
+    string "MQTT password (local sdkconfig, never commit)"
+    depends on EDGE_HOME_MQTT && !EDGE_HOME_THINGSBOARD
+    default ""
+
+config EDGE_UART_TX
+    int "Confirmed UART2 TX GPIO (-1 leaves UART disabled)"
+    range -1 33
+    default -1
+
+config EDGE_UART_RX
+    int "Confirmed UART2 RX GPIO (-1 leaves UART disabled)"
+    range -1 39
+    default -1
+
+config EDGE_WIFI_SSID
+    string "Wi-Fi SSID"
+    default ""
+
+config EDGE_WIFI_PASSWORD
+    string "Wi-Fi password (local sdkconfig, never commit)"
+    default ""
+
+config EDGE_SERVER_IPV4
+    string "PC server / MQTT broker IPv4 address"
+    default ""
+
+config EDGE_SERVER_PORT
+    int "PC server TCP port"
+    range 1 65535
+    default 9000
+
+endmenu

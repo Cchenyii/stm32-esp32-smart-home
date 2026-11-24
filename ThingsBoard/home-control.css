@@ -1,0 +1,53 @@
+.edge-cloud-home {
+  box-sizing: border-box;
+  height: 100%;
+  overflow: auto;
+  padding: 1rem;
+  color: inherit;
+}
+.edge-cloud-home header, .edge-cloud-home .current, .edge-cloud-home .actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .55rem;
+}
+.edge-cloud-home header { justify-content: space-between; }
+.edge-cloud-home header strong { font-size: 1.2rem; }
+.edge-cloud-home .readings {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: .55rem;
+  margin: .8rem 0;
+}
+.edge-cloud-home .readings div {
+  border: 1px solid currentColor;
+  border-radius: .45rem;
+  padding: .45rem;
+  overflow-wrap: anywhere;
+}
+.edge-cloud-home dt { font-size: .85rem; }
+.edge-cloud-home dd { margin: .2rem 0 0; font-variant-numeric: tabular-nums; }
+.edge-cloud-home .current { margin: .55rem 0; }
+.edge-cloud-home button, .edge-cloud-home input {
+  box-sizing: border-box;
+  border: 1px solid currentColor;
+  border-radius: .35rem;
+  color: inherit;
+  background: transparent;
+  padding: .4rem .55rem;
+  min-height: 2.35rem;
+  font: inherit;
+}
+.edge-cloud-home button:not(:disabled) { cursor: pointer; }
+.edge-cloud-home button:disabled, .edge-cloud-home input:disabled { opacity: .48; }
+.edge-cloud-home :focus-visible { outline-offset: 2px; }
+.edge-cloud-home .thresholds {
+  display: flex;
+  gap: .75rem;
+  flex-wrap: wrap;
+  margin-top: .85rem;
+}
+.edge-cloud-home form { display: flex; flex-wrap: wrap; align-items: end; gap: .4rem; }
+.edge-cloud-home input { display: block; max-width: 6rem; margin-top: .25rem; }
+.edge-cloud-home small { flex-basis: 100%; }
+.edge-cloud-home [data-field=notice] { margin: .65rem 0 0; min-height: 1.4em; }

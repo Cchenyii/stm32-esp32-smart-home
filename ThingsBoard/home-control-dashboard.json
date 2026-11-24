@@ -1,0 +1,74 @@
+{
+  "title": "家中设备",
+  "configuration": {
+    "widgets": {
+      "56cc2a86-4d7a-40d5-9937-06e091eb78b8": {
+        "id": "56cc2a86-4d7a-40d5-9937-06e091eb78b8",
+        "type": "rpc",
+        "typeFullFqn": "tenant.edge_home_monitor_control",
+        "sizeX": 12,
+        "sizeY": 9,
+        "config": {
+          "title": "智能家居控制",
+          "showTitle": false,
+          "backgroundColor": "#ffffff",
+          "color": "#202b36",
+          "padding": "0px",
+          "dropShadow": true,
+          "enableFullscreen": true,
+          "settings": {},
+          "actions": {},
+          "datasources": [],
+          "targetDevice": {
+            "type": "entity",
+            "entityAliasId": "c573f747-6e76-41c5-99ff-711b8ccfd870"
+          }
+        }
+      }
+    },
+    "states": {
+      "default": {
+        "name": "家中设备",
+        "root": true,
+        "layouts": {
+          "main": {
+            "widgets": {
+              "56cc2a86-4d7a-40d5-9937-06e091eb78b8": {
+                "sizeX": 24,
+                "sizeY": 12,
+                "row": 0,
+                "col": 0,
+                "mobileOrder": 0,
+                "mobileHeight": 11
+              }
+            },
+            "gridSettings": {
+              "columns": 24,
+              "margin": 10,
+              "outerMargin": true,
+              "autoFillHeight": false,
+              "mobileAutoFillHeight": false,
+              "mobileRowHeight": 46,
+              "backgroundColor": "#f3f6fa",
+              "layoutType": "default"
+            }
+          }
+        }
+      }
+    },
+    "entityAliases": {
+      "c573f747-6e76-41c5-99ff-711b8ccfd870": {
+        "id": "c573f747-6e76-41c5-99ff-711b8ccfd870",
+        "alias": "home-01",
+        "filter": {
+          "type": "entityName",
+          "resolveMultiple": false,
+          "entityType": "DEVICE",
+          "entityNameFilter": "home-01"
+        }
+      }
+    },
+    "filters": {},
+    "settings": {}
+  }
+}

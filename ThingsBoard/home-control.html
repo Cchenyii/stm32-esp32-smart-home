@@ -1,0 +1,41 @@
+<div class="edge-cloud-home">
+  <header>
+    <strong>家中设备</strong>
+    <span data-field="connection" role="status">等待设备</span>
+  </header>
+  <dl class="readings">
+    <div><dt>温度</dt><dd data-field="temperature">—</dd></div>
+    <div><dt>湿度</dt><dd data-field="humidity">—</dd></div>
+    <div><dt>相对亮度</dt><dd data-field="light">—</dd></div>
+  </dl>
+  <p class="current">
+    模式 <b data-field="mode">—</b>
+    风扇指令 <b data-field="fan">—</b>
+    窗帘指令 <b data-field="curtain">—</b>
+  </p>
+  <div class="actions">
+    <button type="button" data-op="1" data-value="0" disabled>自动模式</button>
+    <button type="button" data-op="1" data-value="1" disabled>手动模式</button>
+    <button type="button" data-op="2" data-value="1" data-manual disabled>开风扇</button>
+    <button type="button" data-op="2" data-value="0" data-manual disabled>关风扇</button>
+    <button type="button" data-op="3" data-value="1" data-manual disabled>开帘</button>
+    <button type="button" data-op="3" data-value="2" data-manual disabled>关帘</button>
+  </div>
+  <div class="thresholds">
+    <form data-op="4">
+      <label>风扇开启温度（°C）
+        <input type="number" min="10" max="60" step="1" required disabled>
+      </label>
+      <button type="submit" disabled>设置</button>
+      <small data-field="heatThreshold">—</small>
+    </form>
+    <form data-op="5">
+      <label>关帘亮度（0–4095）
+        <input type="number" min="600" max="4000" step="100" required disabled>
+      </label>
+      <button type="submit" disabled>设置</button>
+      <small data-field="lightThreshold">—</small>
+    </form>
+  </div>
+  <p data-field="notice" role="status" aria-live="polite"></p>
+</div>
