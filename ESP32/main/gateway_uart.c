@@ -1,4 +1,5 @@
 #include "gateway.h"
+#include "ota_service.h"
 #include "driver/gpio.h"
 #include "driver/uart.h"
 #include "esp_log.h"
@@ -116,6 +117,7 @@ static void uart_worker(void *context)
     uint16_t sequence = 0;
     uint32_t heartbeat = gateway_ms();
     for (;;) {
+        ota_service_uart_alive();
         uart_event_t event;
         if (xQueueReceive(events, &event, pdMS_TO_TICKS(20)) == pdTRUE) {
             if (event.type == UART_FIFO_OVF || event.type == UART_BUFFER_FULL ||

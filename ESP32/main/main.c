@@ -1,4 +1,5 @@
 #include "gateway.h"
+#include "ota_service.h"
 #include "esp_log.h"
 #include "esp_timer.h"
 #include "sdkconfig.h"
@@ -20,6 +21,10 @@ static bool valid_id(const char *id)
 
 void app_main(void)
 {
+    esp_err_t ota_result = ota_service_start();
+    if (ota_result != ESP_OK) {
+        ESP_LOGE("edge", "OTA service initialization failed: %s", esp_err_to_name(ota_result));
+    }
     if (!valid_id(CONFIG_EDGE_DEVICE_ID)) {
         ESP_LOGE("edge", "Invalid device ID");
         return;
@@ -55,5 +60,10 @@ void app_main(void)
     }
     if (!gateway_net_start(&gateway)) {
         ESP_LOGE("edge", "Wi-Fi/network startup failed");
+    } else {
+        ota_result = ota_service_network_ready();
+        if (ota_result != ESP_OK) {
+            ESP_LOGE("edge", "OTA HTTP initialization failed: %s", esp_err_to_name(ota_result));
+        }
     }
 }

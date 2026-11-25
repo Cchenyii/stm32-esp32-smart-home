@@ -4,13 +4,25 @@ param(
     [ValidateSet('local', 'verify-bridge', 'verify-simulator', 'verify-home', 'verify-cloud')]
     [string]$Profile = 'local',
     [string]$IdfRoot = 'C:\esp\v6.1\esp-idf',
-    [string]$ToolsRoot = 'C:\Espressif\tools'
+    [string]$ToolsRoot = 'C:\Espressif\tools',
+    [ValidatePattern('^[A-Za-z0-9][A-Za-z0-9._-]{0,30}$')]
+    [string]$Version,
+    [switch]$DiagnosticRollback,
+    [string]$OutputDirectory
 )
 
 $ErrorActionPreference = 'Stop'
 if ($Action -eq 'menuconfig' -and $Profile -ne 'local') {
     throw 'menuconfig edits only the local profile.'
 }
+if ($Action -eq 'menuconfig' -and ($Version -or $DiagnosticRollback -or $OutputDirectory)) {
+    throw 'Version, DiagnosticRollback and OutputDirectory apply only to builds.'
+}
+if ($DiagnosticRollback -and (!$Version -or $Profile -notin @('local','verify-cloud') -or
+                            ($Profile -eq 'local' -and !$OutputDirectory))) {
+    throw 'Use a unique Version, a cloud profile and a separate output directory for a local rollback test.'
+}
+$outputOverride = if ($OutputDirectory) { $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($OutputDirectory) }
 $repo = Split-Path -Parent $PSScriptRoot
 $pythonEnv = Join-Path $ToolsRoot 'python\v6.1\venv'
 $idfPy = Join-Path $IdfRoot 'tools\idf.py'
@@ -34,18 +46,22 @@ $main = Join-Path $project 'main'
 $wireInc = Join-Path $stage 'STM32\Core\Inc'
 $wireSrc = Join-Path $stage 'STM32\Core\Src'
 New-Item -ItemType Directory -Path $main,$wireInc,$wireSrc -Force | Out-Null
-foreach ($file in @('CMakeLists.txt','sdkconfig.defaults','dependencies.lock')) {
+foreach ($file in @('CMakeLists.txt','sdkconfig.defaults','dependencies.lock','partitions.csv','version.txt')) {
     $path = Join-Path $source $file
     if (Test-Path -LiteralPath $path) {
         Copy-Item -LiteralPath $path -Destination $project -Force
     }
 }
+if ($Version) {
+    Set-Content -LiteralPath (Join-Path $project 'version.txt') -Value $Version -Encoding ascii
+}
 Get-ChildItem -LiteralPath (Join-Path $source 'main') -File |
     Copy-Item -Destination $main -Force
 Copy-Item -LiteralPath (Join-Path $repo 'STM32\Core\Inc\edge_wire.h') -Destination $wireInc -Force
 Copy-Item -LiteralPath (Join-Path $repo 'STM32\Core\Src\edge_wire.c') -Destination $wireSrc -Force
-$sdkconfig = Join-Path $stage "sdkconfig-$Profile"
-$build = "build-$Profile"
+$flavor = if ($DiagnosticRollback) { "$Profile-rollback" } else { $Profile }
+$sdkconfig = Join-Path $stage "sdkconfig-$flavor"
+$build = "build-$flavor"
 if ($Profile -eq 'local') {
     $localConfig = Join-Path $source 'sdkconfig'
     if (Test-Path -LiteralPath $localConfig) {
@@ -84,6 +100,15 @@ if ($Profile -eq 'local') {
     ) | Set-Content -LiteralPath $sdkconfig -Encoding ascii
 }
 
+if ($Action -eq 'build') {
+    $setting = if ($DiagnosticRollback) { 'CONFIG_EDGE_OTA_DIAGNOSTIC_ROLLBACK=y' }
+               else { '# CONFIG_EDGE_OTA_DIAGNOSTIC_ROLLBACK is not set' }
+    $configLines = @(Get-Content -LiteralPath $sdkconfig | Where-Object {
+        $_ -notmatch '^(CONFIG_EDGE_OTA_DIAGNOSTIC_ROLLBACK=|# CONFIG_EDGE_OTA_DIAGNOSTIC_ROLLBACK is not set)'
+    })
+    ($configLines + $setting) | Set-Content -LiteralPath $sdkconfig -Encoding utf8
+}
+
 $previous = @{}
 $environment = @{
     PYTHONUTF8 = '1'
@@ -112,6 +137,9 @@ try {
     if ($LASTEXITCODE -ne 0) {
         throw "idf.py $Action failed with code $LASTEXITCODE."
     }
+    if ($DiagnosticRollback -and !(Select-String -LiteralPath $sdkconfig -SimpleMatch 'CONFIG_EDGE_OTA_DIAGNOSTIC_ROLLBACK=y' -Quiet)) {
+        throw 'The diagnostic rollback image requires a ThingsBoard build with OTA enabled.'
+    }
     if ($Action -eq 'menuconfig') {
         Copy-Item -LiteralPath $sdkconfig -Destination (Join-Path $source 'sdkconfig') -Force
     }
@@ -119,11 +147,13 @@ try {
         Copy-Item -LiteralPath 'dependencies.lock' -Destination $source -Force
     }
     if ($Action -eq 'build' -and $Profile -eq 'local') {
-        $output = Join-Path $source 'build-artifacts'
-        New-Item -ItemType Directory -Path $output,"$output\bootloader","$output\partition_table" -Force | Out-Null
-        foreach ($file in @('edge_gateway.elf','edge_gateway.bin','flash_args','flasher_args.json',
-                            'bootloader\bootloader.bin','partition_table\partition-table.bin')) {
-            Copy-Item -LiteralPath (Join-Path $build $file) -Destination (Join-Path $output $file) -Force
+        $output = if ($outputOverride) { $outputOverride } else { Join-Path $source 'build-artifacts' }
+        $flash = Get-Content -LiteralPath (Join-Path $build 'flasher_args.json') -Raw | ConvertFrom-Json
+        $files = @('edge_gateway.elf','flash_args','flasher_args.json') + @($flash.flash_files.PSObject.Properties.Value)
+        foreach ($file in $files) {
+            $destination = Join-Path $output $file
+            New-Item -ItemType Directory -Path (Split-Path -Parent $destination) -Force | Out-Null
+            Copy-Item -LiteralPath (Join-Path $build $file) -Destination $destination -Force
         }
         Write-Host "ESP32 artifacts: $output"
     }

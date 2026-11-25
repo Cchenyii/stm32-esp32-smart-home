@@ -36,6 +36,22 @@ config EDGE_TB_NTP_SERVER
     depends on EDGE_HOME_THINGSBOARD
     default "pool.ntp.org"
 
+config EDGE_OTA
+    bool "USB-authorized firmware updates from the local network"
+    depends on EDGE_HOME_THINGSBOARD && ESP_CONSOLE_UART_DEFAULT
+    default y
+    help
+        Serve an OTA upload page on the local network. Authorization is issued
+        only over UART0 using OTAARM. A new image must pass startup checks.
+
+config EDGE_OTA_DIAGNOSTIC_ROLLBACK
+    bool "Diagnostic image: force OTA rollback"
+    depends on EDGE_OTA
+    default n
+    help
+        Use an isolated build to exercise rollback with a known valid fallback.
+        Never use this image as the initial USB baseline.
+
 config EDGE_MQTT_PORT
     int "MQTT broker TCP port"
     depends on EDGE_HOME_MQTT && !EDGE_HOME_THINGSBOARD
