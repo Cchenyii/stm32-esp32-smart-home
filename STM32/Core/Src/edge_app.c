@@ -1,5 +1,6 @@
 #include "edge_app.h"
 #include "edge_board.h"
+#include "edge_settings.h"
 #include "edge_wire.h"
 #include "FreeRTOS.h"
 #include "queue.h"
@@ -10,7 +11,7 @@ enum Worker { SENSOR, PROCESS, DISPLAY, UART, WORKER_COUNT };
 
 enum {
     LIGHT_PERIOD_MS = 100, LIGHT_STALE_MS = 350, CONTROL_PERIOD_MS = 10,
-    HOME_REPORT_MS = 500, HOME_COMMAND_MAX_AGE_MS = 450
+    HOME_REPORT_MS = 500, HOME_COMMAND_MAX_AGE_MS = 450, SETTINGS_QUIET_MS = 2000
 };
 
 typedef struct {
@@ -22,7 +23,13 @@ typedef struct {
 typedef struct {
     EdgeSample sample;
     EdgeHomeView home;
+    EdgeOledPower oled_power;
 } DisplayState;
+
+typedef struct {
+    EdgeThresholds thresholds;
+    uint32_t changed_ms;
+} ThresholdChange;
 
 typedef struct {
     EdgeHomeCommand command; /* Operation zero is a session sync. */
@@ -46,11 +53,15 @@ volatile struct {
 volatile EdgeSample edge_last_sample;
 volatile LightSample edge_last_light;
 volatile EdgeHomeView edge_home_view;
+volatile uint32_t edge_settings_saves, edge_settings_errors;
 
 static TaskHandle_t workers[WORKER_COUNT];
 static QueueHandle_t raw_queue, latest_display, latest_tx, latest_light;
 static QueueHandle_t home_requests, home_replies, home_state;
+static QueueHandle_t threshold_changes;
 static SemaphoreHandle_t settings_lock;
+static EdgeSettings thresholds_store;
+static EdgeThresholds startup_thresholds;
 static bool home_enabled;
 static volatile bool uart_alive;
 static uint32_t period_ms = EDGE_PERIOD_DEFAULT;
@@ -124,11 +135,27 @@ static void sensor_task(void *context)
                 count_drop();
             }
         }
+        ThresholdChange change;
+        /* The sensor task owns Flash programming, outside the DHT22 timing window. */
+        if (home_enabled && xQueuePeek(threshold_changes, &change, 0) == pdTRUE &&
+            HAL_GetTick() - change.changed_ms >= SETTINGS_QUIET_MS &&
+            xQueueReceive(threshold_changes, &change, 0) == pdTRUE) {
+            bool changed = !thresholds_store.valid ||
+                           thresholds_store.current.fan_on_tenths != change.thresholds.fan_on_tenths ||
+                           thresholds_store.current.close_level != change.thresholds.close_level;
+            if (changed) {
+                if (edge_settings_save(&thresholds_store, change.thresholds)) {
+                    ++edge_settings_saves;
+                } else {
+                    ++edge_settings_errors;
+                }
+            }
+        }
         (void)ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(100U));
     }
 }
 
-static void control_tick(EdgeHome *home, DisplayState *state)
+static void control_tick(EdgeHome *home, DisplayState *state, EdgeOledIdle *idle)
 {
     LightSample light = {0};
     (void)xQueuePeek(latest_light, &light, 0);
@@ -141,7 +168,9 @@ static void control_tick(EdgeHome *home, DisplayState *state)
                        EDGE_LIGHT_MAX - light.raw : light.raw,
         .light_valid = light.valid && now - light.timestamp_ms <= LIGHT_STALE_MS
     };
-    edge_home_step(home, reading, edge_home_buttons(), now);
+    uint8_t buttons = edge_oled_idle_step(idle, edge_home_buttons(), now);
+    state->oled_power = idle->power;
+    edge_home_step(home, reading, buttons, now);
     HomeRequest request = {0};
     uint8_t result = EDGE_STALE;
     if (home_requests != NULL && xQueueReceive(home_requests, &request, 0) == pdTRUE) {
@@ -153,6 +182,14 @@ static void control_tick(EdgeHome *home, DisplayState *state)
                 result = edge_home_remote(home, reading, request.command, received_now);
             }
         }
+    }
+    if (state->home.fan_on_tenths != home->view.fan_on_tenths ||
+        state->home.close_level != home->view.close_level) {
+        ThresholdChange change = {
+            .thresholds = {(uint16_t)home->view.fan_on_tenths, home->view.close_level},
+            .changed_ms = HAL_GetTick()
+        };
+        xQueueOverwrite(threshold_changes, &change);
     }
     edge_home_outputs(&home->view);
     state->home = home->view;
@@ -190,8 +227,14 @@ static void process_task(void *context)
     (void)context;
     DisplayState state = {0};
     EdgeHome home;
+    EdgeOledIdle idle = {.last_input_ms = HAL_GetTick()};
     if (home_enabled) {
-        edge_home_init(&home, edge_home_buttons(), HAL_GetTick());
+        edge_home_init(&home, edge_home_buttons(), idle.last_input_ms);
+        if (startup_thresholds.fan_on_tenths != 0U) {
+            home.view.fan_on_tenths = (int16_t)startup_thresholds.fan_on_tenths;
+            home.view.close_level = startup_thresholds.close_level;
+        }
+        state.home = home.view;
     }
     const TickType_t wait = pdMS_TO_TICKS(home_enabled ? CONTROL_PERIOD_MS : 150U);
     for (;;) {
@@ -208,7 +251,7 @@ static void process_task(void *context)
             }
         }
         if (home_enabled) {
-            control_tick(&home, &state);
+            control_tick(&home, &state, &idle);
         }
         if (received || home_enabled) {
             xQueueOverwrite(latest_display, &state);
@@ -225,7 +268,8 @@ static void display_task(void *context)
     for (;;) {
         bool available = xQueuePeek(latest_display, &state, 0) == pdTRUE;
         if ((available || !home_enabled) &&
-            !edge_display_update(&state.sample, uart_alive, home_enabled ? &state.home : NULL)) {
+            !edge_display_update(&state.sample, uart_alive, home_enabled ? &state.home : NULL,
+                                 state.oled_power)) {
             ++edge_diagnostics.display_errors;
         }
         progress(DISPLAY);
@@ -464,6 +508,13 @@ static void boot_task(void *context)
     latest_tx = xQueueCreate(1, sizeof(EdgeSample));
     if (home_enabled) {
         latest_light = xQueueCreate(1, sizeof(LightSample));
+        threshold_changes = xQueueCreate(1, sizeof(ThresholdChange));
+        if (!edge_settings_open(&thresholds_store, edge_settings_flash())) {
+            ++edge_settings_errors;
+        }
+        if (thresholds_store.valid) {
+            startup_thresholds = thresholds_store.current;
+        }
         if (edge_uart_ready()) {
             home_requests = xQueueCreate(4, sizeof(HomeRequest));
             home_replies = xQueueCreate(4, sizeof(EdgeHomeAck));
@@ -474,7 +525,7 @@ static void boot_task(void *context)
         }
     }
     if (settings_lock == NULL || raw_queue == NULL || latest_display == NULL || latest_tx == NULL ||
-        (home_enabled && latest_light == NULL) ||
+        (home_enabled && (latest_light == NULL || threshold_changes == NULL)) ||
         xTaskCreate(sensor_task, "Sensor", 384, NULL, 3, &workers[SENSOR]) != pdPASS ||
         xTaskCreate(process_task, "Process", 256, NULL, 2, &workers[PROCESS]) != pdPASS ||
         xTaskCreate(display_task, "Display", 640, NULL, 1, &workers[DISPLAY]) != pdPASS ||

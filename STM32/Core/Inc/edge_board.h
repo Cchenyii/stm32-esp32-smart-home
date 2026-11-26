@@ -2,7 +2,7 @@
 #define EDGE_BOARD_H
 
 #include "stm32f4xx_hal.h"
-#include "edge_home.h"
+#include "edge_oled_ui.h"
 #include <stdbool.h>
 #include <stddef.h>
 
@@ -40,7 +40,8 @@ extern volatile uint32_t edge_board_state;
 void edge_board_init(void);
 void edge_board_read(EdgeSample *sample);
 void edge_pin_init(EdgePin pin, uint32_t mode, uint32_t pull);
-bool edge_display_update(const EdgeSample *sample, bool uart_alive, const EdgeHomeView *home);
+bool edge_display_update(const EdgeSample *sample, bool uart_alive, const EdgeHomeView *home,
+                         EdgeOledPower power);
 void edge_display_init(void);
 void edge_uart_init(void);
 bool edge_uart_ready(void);

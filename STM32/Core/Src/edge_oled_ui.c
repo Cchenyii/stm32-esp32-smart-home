@@ -2,6 +2,23 @@
 #include <stdio.h>
 #include <string.h>
 
+uint8_t edge_oled_idle_step(EdgeOledIdle *idle, uint8_t buttons, uint32_t now_ms)
+{
+    if (buttons != 0U) {
+        if (idle->power == EDGE_OLED_OFF) {
+            idle->wake_hold = true;
+        }
+        idle->last_input_ms = now_ms;
+        idle->power = EDGE_OLED_BRIGHT;
+        return idle->wake_hold ? 0U : buttons;
+    }
+    idle->wake_hold = false;
+    uint32_t elapsed = now_ms - idle->last_input_ms;
+    idle->power = elapsed >= 60000U ? EDGE_OLED_OFF :
+                  elapsed >= 30000U ? EDGE_OLED_DIM : EDGE_OLED_BRIGHT;
+    return 0U;
+}
+
 static const uint8_t digits[10][5] = {
     {0x3e,0x51,0x49,0x45,0x3e}, {0,0x42,0x7f,0x40,0}, {0x42,0x61,0x51,0x49,0x46},
     {0x21,0x41,0x45,0x4b,0x31}, {0x18,0x14,0x12,0x7f,0x10}, {0x27,0x45,0x45,0x45,0x39},

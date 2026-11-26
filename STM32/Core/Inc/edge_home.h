@@ -5,7 +5,11 @@
 #include <stdint.h>
 #include "edge_wire.h"
 
-enum { EDGE_LIGHT_MAX = 4095 };
+enum {
+    EDGE_LIGHT_MAX = 4095,
+    EDGE_MIN_FAN_ON = 100, EDGE_MAX_FAN_ON = 600, EDGE_FAN_STEP = 10,
+    EDGE_MIN_CLOSE_LEVEL = 600, EDGE_MAX_CLOSE_LEVEL = 4000, EDGE_LIGHT_STEP = 100
+};
 
 typedef enum {
     EDGE_KEY_MODE, EDGE_KEY_UP, EDGE_KEY_DOWN, EDGE_KEY_COUNT

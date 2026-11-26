@@ -47,8 +47,14 @@ MEMORY
 {
   CCMRAM    (xrw)    : ORIGIN = 0x10000000,   LENGTH = 64K
   RAM    (xrw)    : ORIGIN = 0x20000000,   LENGTH = 128K
-  FLASH    (rx)    : ORIGIN = 0x8000000,   LENGTH = 512K
+  FLASH    (rx)    : ORIGIN = 0x08000000, LENGTH = 256K
+  SETTINGS_A (r)   : ORIGIN = 0x08040000, LENGTH = 128K
+  SETTINGS_B (r)   : ORIGIN = 0x08060000, LENGTH = 128K
 }
+
+__edge_settings_a = ORIGIN(SETTINGS_A);
+__edge_settings_b = ORIGIN(SETTINGS_B);
+__edge_settings_size = LENGTH(SETTINGS_A);
 
 /* Sections */
 SECTIONS

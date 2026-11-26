@@ -7,10 +7,6 @@ enum {
     LIGHT_HYSTERESIS = 500,   /* ADC counts on the 0–4095 scale. */
     CURTAIN_INTERVAL_MS = 1200,
     LOCAL_PRIORITY_MS = 1200,
-    MIN_FAN_ON = 100,
-    MAX_FAN_ON = 600,
-    MIN_CLOSE_LEVEL = 600,
-    MAX_CLOSE_LEVEL = 4000,
     JOYSTICK_TRIP_LOW = 1100,
     JOYSTICK_CENTER_LOW = 1500,
     JOYSTICK_CENTER_HIGH = 2600,
@@ -164,16 +160,16 @@ static void apply_buttons(EdgeHome *home, unsigned events)
         view->mode_choice_manual = down;
         break;
     case EDGE_HOME_SET_TEMP: {
-        int value = view->fan_on_tenths + (up ? 10 : -10);
-        if (value >= MIN_FAN_ON && value <= MAX_FAN_ON) {
+        int value = view->fan_on_tenths + (up ? EDGE_FAN_STEP : -EDGE_FAN_STEP);
+        if (value >= EDGE_MIN_FAN_ON && value <= EDGE_MAX_FAN_ON) {
             view->fan_on_tenths = (int16_t)value;
             view->source = EDGE_HOME_LOCAL_SOURCE;
         }
         break;
     }
     case EDGE_HOME_SET_LIGHT: {
-        int value = view->close_level + (up ? 100 : -100);
-        if (value >= MIN_CLOSE_LEVEL && value <= MAX_CLOSE_LEVEL) {
+        int value = view->close_level + (up ? EDGE_LIGHT_STEP : -EDGE_LIGHT_STEP);
+        if (value >= EDGE_MIN_CLOSE_LEVEL && value <= EDGE_MAX_CLOSE_LEVEL) {
             view->close_level = (uint16_t)value;
             view->source = EDGE_HOME_LOCAL_SOURCE;
         }
@@ -283,13 +279,13 @@ static uint8_t apply_remote(EdgeHome *home, EdgeHomeCommand cmd)
         home->curtain_target = (EdgeCurtain)cmd.value;
         break;
     case EDGE_HOME_SET_FAN_THRESHOLD:
-        if (cmd.value < MIN_FAN_ON || cmd.value > MAX_FAN_ON || cmd.value % 10U != 0U) {
+        if (cmd.value < EDGE_MIN_FAN_ON || cmd.value > EDGE_MAX_FAN_ON || cmd.value % EDGE_FAN_STEP != 0U) {
             return EDGE_INVALID;
         }
         view->fan_on_tenths = (int16_t)cmd.value;
         break;
     case EDGE_HOME_SET_LIGHT_THRESHOLD:
-        if (cmd.value < MIN_CLOSE_LEVEL || cmd.value > MAX_CLOSE_LEVEL || cmd.value % 100U != 0U) {
+        if (cmd.value < EDGE_MIN_CLOSE_LEVEL || cmd.value > EDGE_MAX_CLOSE_LEVEL || cmd.value % EDGE_LIGHT_STEP != 0U) {
             return EDGE_INVALID;
         }
         view->close_level = cmd.value;

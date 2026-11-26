@@ -95,5 +95,15 @@ int main(int argc, char **argv)
             return 1;
         }
     }
-    puts("OLED: boundaries, readings, menu highlights, mode selection and thresholds passed");
+    uint32_t start = UINT32_MAX - 10000U;
+    EdgeOledIdle idle = {.last_input_ms = start};
+    assert(edge_oled_idle_step(&idle, 0, start + 29999U) == 0U && idle.power == EDGE_OLED_BRIGHT);
+    assert(edge_oled_idle_step(&idle, 0, start + 30000U) == 0U && idle.power == EDGE_OLED_DIM);
+    assert(edge_oled_idle_step(&idle, 0, start + 60000U) == 0U && idle.power == EDGE_OLED_OFF);
+    uint8_t up = 1U << EDGE_KEY_UP;
+    assert(edge_oled_idle_step(&idle, up, start + 60010U) == 0U && idle.power == EDGE_OLED_BRIGHT);
+    assert(edge_oled_idle_step(&idle, up, start + 61000U) == 0U);
+    assert(edge_oled_idle_step(&idle, 0, start + 61010U) == 0U);
+    assert(edge_oled_idle_step(&idle, up, start + 61100U) == up);
+    puts("OLED: rendering, idle dimming, blanking and wake input passed");
 }
