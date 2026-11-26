@@ -1,0 +1,378 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1840 1340" width="1840" height="1340" role="img" aria-labelledby="title desc">
+<title id="title">STM32F407 与 ESP32 智能家居俯视接线图</title>
+<desc id="desc">实测接线使用 PA2 至 GPIO16 和 GPIO25 至 PD6，3.3 V 传感器电源、5 V 执行器电源及共地。</desc>
+<style>
+text{font-family:"Microsoft YaHei","Noto Sans CJK SC",Arial,sans-serif;fill:#142b3e}
+.pin{font-family:Consolas,"Microsoft YaHei",monospace}
+.wire{fill:none;stroke-width:4;stroke-linejoin:round;stroke-linecap:round}
+</style>
+<defs><marker id="arrow" markerWidth="9" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L9 4 L0 8z" fill="#006c68"/></marker></defs>
+<rect x="0" y="0" width="1840" height="1340" rx="0" fill="#f2f6f9" stroke="none"/>
+<text x="58" y="61" font-size="40" style="fill:#142b3e" font-weight="700" text-anchor="start" class="">智能家居整机俯视接线</text>
+<text x="60" y="100" font-size="22" style="fill:#496075" font-weight="400" text-anchor="start" class="">STM32F407VET6 ＋ NodeMCU-32S  ·  PA5 光照 / PS2 摇杆 / PD6 串口版</text>
+<polyline points="1060,92 1088,92" stroke="#a75a00" class="wire"/>
+<text x="1097" y="99" font-size="17" style="fill:#496075" font-weight="400" text-anchor="start" class="">3.3 V</text>
+<polyline points="1190,92 1218,92" stroke="#af2740" class="wire"/>
+<text x="1227" y="99" font-size="17" style="fill:#496075" font-weight="400" text-anchor="start" class="">外部 5 V</text>
+<polyline points="1348,92 1376,92" stroke="#35485a" class="wire"/>
+<text x="1385" y="99" font-size="17" style="fill:#496075" font-weight="400" text-anchor="start" class="">共地</text>
+<polyline points="1462,92 1490,92" stroke="#006c68" class="wire"/>
+<text x="1499" y="99" font-size="17" style="fill:#496075" font-weight="400" text-anchor="start" class="">UART</text>
+<polyline points="1588,92 1616,92" stroke="#6945a5" class="wire"/>
+<text x="1625" y="99" font-size="17" style="fill:#496075" font-weight="400" text-anchor="start" class="">SWD / 摇杆</text>
+<rect x="57" y="152" width="376" height="210" rx="12" fill="#fff" stroke="#bdcdd9"/>
+<text x="78" y="187" font-size="25" style="fill:#142b3e" font-weight="700" text-anchor="start" class="">执行器与传感器供电</text>
+<text x="78" y="216" font-size="17" style="fill:#496075" font-weight="400" text-anchor="start" class="">板上 USB 供电，电源排按标记分线</text>
+<rect x="78" y="233" width="78" height="27" rx="6" fill="#fff" stroke="#a75a00"/>
+<text x="117.0" y="252" font-size="15" style="fill:#a75a00" font-weight="700" text-anchor="middle" class="pin">3V3</text>
+<text x="169" y="253" font-size="17" style="fill:#142b3e" font-weight="400" text-anchor="start" class="">STM32 → 传感器与 OLED</text>
+<rect x="78" y="267" width="78" height="27" rx="6" fill="#fff" stroke="#af2740"/>
+<text x="117.0" y="286" font-size="15" style="fill:#af2740" font-weight="700" text-anchor="middle" class="pin">5V_EXT</text>
+<text x="169" y="287" font-size="17" style="fill:#142b3e" font-weight="400" text-anchor="start" class="">稳压 5 V → 风扇驱动与舵机</text>
+<rect x="78" y="301" width="78" height="27" rx="6" fill="#fff" stroke="#35485a"/>
+<text x="117.0" y="320" font-size="15" style="fill:#35485a" font-weight="700" text-anchor="middle" class="pin">GND</text>
+<text x="169" y="321" font-size="17" style="fill:#142b3e" font-weight="400" text-anchor="start" class="">两块板与执行器负极共地</text>
+<rect x="57" y="418" width="376" height="153" rx="12" fill="#fff" stroke="#bdcdd9"/>
+<text x="78" y="453" font-size="25" style="fill:#142b3e" font-weight="700" text-anchor="start" class="">SG90 舵机</text>
+<text x="78" y="482" font-size="17" style="fill:#496075" font-weight="400" text-anchor="start" class="">红线供电，棕线地，黄线为信号</text>
+<rect x="77" y="514" width="78" height="27" rx="6" fill="#fff" stroke="#af2740"/>
+<text x="116.0" y="533" font-size="15" style="fill:#af2740" font-weight="700" text-anchor="middle" class="pin">5V_EXT</text>
+<rect x="164" y="514" width="78" height="27" rx="6" fill="#fff" stroke="#35485a"/>
+<text x="203.0" y="533" font-size="15" style="fill:#35485a" font-weight="700" text-anchor="middle" class="pin">GND</text>
+<rect x="57" y="623" width="376" height="230" rx="12" fill="#fff" stroke="#bdcdd9"/>
+<text x="78" y="658" font-size="25" style="fill:#142b3e" font-weight="700" text-anchor="start" class="">SSD1306 OLED</text>
+<text x="78" y="687" font-size="17" style="fill:#496075" font-weight="400" text-anchor="start" class="">I²C 四针，按实物丝印定位</text>
+<rect x="77" y="718" width="78" height="27" rx="6" fill="#fff" stroke="#a75a00"/>
+<text x="116.0" y="737" font-size="15" style="fill:#a75a00" font-weight="700" text-anchor="middle" class="pin">3V3</text>
+<rect x="167" y="718" width="78" height="27" rx="6" fill="#fff" stroke="#35485a"/>
+<text x="206.0" y="737" font-size="15" style="fill:#35485a" font-weight="700" text-anchor="middle" class="pin">GND</text>
+<rect x="1371" y="225" width="411" height="210" rx="12" fill="#fff" stroke="#bdcdd9"/>
+<text x="1392" y="260" font-size="25" style="fill:#142b3e" font-weight="700" text-anchor="start" class="">JY-25-003 风扇套装</text>
+<text x="1392" y="289" font-size="17" style="fill:#496075" font-weight="400" text-anchor="start" class="">GPIO 为低时启动，风扇接驱动板 2P 插座</text>
+<rect x="1392" y="321" width="78" height="27" rx="6" fill="#fff" stroke="#af2740"/>
+<text x="1431.0" y="340" font-size="15" style="fill:#af2740" font-weight="700" text-anchor="middle" class="pin">5V_EXT</text>
+<rect x="1480" y="321" width="78" height="27" rx="6" fill="#fff" stroke="#35485a"/>
+<text x="1519.0" y="340" font-size="15" style="fill:#35485a" font-weight="700" text-anchor="middle" class="pin">GND</text>
+<rect x="1371" y="477" width="411" height="168" rx="12" fill="#fff" stroke="#bdcdd9"/>
+<text x="1392" y="512" font-size="25" style="fill:#142b3e" font-weight="700" text-anchor="start" class="">LM393 光照模块</text>
+<text x="1392" y="541" font-size="17" style="fill:#496075" font-weight="400" text-anchor="start" class="">模拟输出 AO，DO 留空</text>
+<rect x="1392" y="572" width="78" height="27" rx="6" fill="#fff" stroke="#a75a00"/>
+<text x="1431.0" y="591" font-size="15" style="fill:#a75a00" font-weight="700" text-anchor="middle" class="pin">3V3</text>
+<rect x="1480" y="572" width="78" height="27" rx="6" fill="#fff" stroke="#35485a"/>
+<text x="1519.0" y="591" font-size="15" style="fill:#35485a" font-weight="700" text-anchor="middle" class="pin">GND</text>
+<rect x="1371" y="846" width="411" height="146" rx="12" fill="#fff" stroke="#bdcdd9"/>
+<text x="1392" y="881" font-size="25" style="fill:#142b3e" font-weight="700" text-anchor="start" class="">DHT22 模块</text>
+<text x="1392" y="910" font-size="17" style="fill:#496075" font-weight="400" text-anchor="start" class="">三针模块，DATA 连接 PC0</text>
+<rect x="1392" y="946" width="78" height="27" rx="6" fill="#fff" stroke="#a75a00"/>
+<text x="1431.0" y="965" font-size="15" style="fill:#a75a00" font-weight="700" text-anchor="middle" class="pin">3V3</text>
+<rect x="1480" y="946" width="78" height="27" rx="6" fill="#fff" stroke="#35485a"/>
+<text x="1519.0" y="965" font-size="15" style="fill:#35485a" font-weight="700" text-anchor="middle" class="pin">GND</text>
+<rect x="1371" y="1046" width="411" height="178" rx="12" fill="#fff" stroke="#bdcdd9"/>
+<text x="1392" y="1081" font-size="25" style="fill:#142b3e" font-weight="700" text-anchor="start" class="">PS2 摇杆</text>
+<text x="1392" y="1110" font-size="17" style="fill:#496075" font-weight="400" text-anchor="start" class="">电源脚可能印 +5V，接 3V3</text>
+<rect x="1392" y="1191" width="78" height="27" rx="6" fill="#fff" stroke="#a75a00"/>
+<text x="1431.0" y="1210" font-size="15" style="fill:#a75a00" font-weight="700" text-anchor="middle" class="pin">3V3</text>
+<rect x="1480" y="1191" width="78" height="27" rx="6" fill="#fff" stroke="#35485a"/>
+<text x="1519.0" y="1210" font-size="15" style="fill:#35485a" font-weight="700" text-anchor="middle" class="pin">GND</text>
+<text x="1580" y="1210" font-size="16" style="fill:#496075" font-weight="400" text-anchor="start" class="">VRx 留空</text>
+<polyline points="433,539 507,539 507,866 598,866" stroke="#a2500d" class="wire"/>
+<polyline points="433,759 454,759 454,898 598,898" stroke="#175a94" class="wire"/>
+<polyline points="433,801 476,801 476,922 598,922" stroke="#175a94" class="wire"/>
+<polyline points="1067,654 1188,654 1188,382 1371,382" stroke="#a2500d" class="wire"/>
+<polyline points="1084,706 1230,706 1230,606 1371,606" stroke="#27734d" class="wire"/>
+<polyline points="1067,846 1300,846 1300,928 1371,928" stroke="#27734d" class="wire"/>
+<polyline points="1067,814 1125,814 1125,1127 1371,1127" stroke="#68439c" class="wire"/>
+<polyline points="1084,858 1160,858 1160,1163 1371,1163" stroke="#68439c" class="wire"/>
+<polyline points="158,1082 65,1082 65,886 543,886 543,802 598,802" stroke="#006c68" class="wire"/>
+<polyline points="1067,750 1200,750 1200,1229 447,1229 447,1112 356,1112" stroke="#006c68" class="wire" marker-end="url(#arrow)"/>
+<rect x="598" y="198" width="486" height="766" rx="18" fill="#123f46" stroke="#132e34"/>
+<rect x="696" y="191" width="75" height="16" rx="5" fill="#cadde4" stroke="#526979"/>
+<text x="734" y="230" font-size="18" style="fill:#fff" font-weight="700" text-anchor="middle" class="pin">USB</text>
+<text x="840" y="292" font-size="24" style="fill:#f1f8fa" font-weight="700" text-anchor="middle" class="pin">STM32F407VET6</text>
+<text x="840" y="326" font-size="16" style="fill:#bed8de" font-weight="400" text-anchor="middle" class="">芯片面朝上 / USB 朝上</text>
+<rect x="774" y="465" width="126" height="126" rx="8" fill="#0b2b32" stroke="#57919a"/>
+<text x="837" y="529" font-size="25" style="fill:#e5f3f5" font-weight="700" text-anchor="middle" class="pin">STM32</text>
+<text x="837" y="557" font-size="18" style="fill:#abc8cf" font-weight="400" text-anchor="middle" class="">实时控制</text>
+<text x="840" y="378" font-size="15" style="fill:#bed8de" font-weight="400" text-anchor="middle" class="">横向同一行两根排针</text>
+<text x="840" y="404" font-size="16" style="fill:#fff" font-weight="700" text-anchor="middle" class="">PA2 外针 / PD6 内针</text>
+<text x="840" y="431" font-size="15" style="fill:#bed8de" font-weight="400" text-anchor="middle" class="">PB6 与 PB7 同一行</text>
+<polyline points="598,866 642,866 642,878" stroke="#a2500d" class="wire"/>
+<polyline points="598,898 642,898 642,910" stroke="#175a94" class="wire"/>
+<polyline points="598,922 616,922 616,910" stroke="#175a94" class="wire"/>
+<polyline points="598,802 642,802 642,814" stroke="#006c68" class="wire" marker-end="url(#arrow)"/>
+<polyline points="1084,706 1041,706 1041,718" stroke="#27734d" class="wire"/>
+<polyline points="1084,858 1041,858 1041,846" stroke="#68439c" class="wire"/>
+<polyline points="1067,654 1084,654" stroke="#a2500d" class="wire"/>
+<polyline points="1067,846 1084,846" stroke="#27734d" class="wire"/>
+<polyline points="1067,814 1084,814" stroke="#68439c" class="wire"/>
+<polyline points="1067,750 1084,750" stroke="#006c68" class="wire"/>
+<circle cx="616" cy="270" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="642" cy="270" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="658" y="276" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">5V</text>
+<text x="719" y="276" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">5V</text>
+<circle cx="616" cy="302" r="3.5" fill="#fff" stroke="#a75a00" stroke-width="2"/>
+<circle cx="642" cy="302" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="658" y="308" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">3V3</text>
+<text x="719" y="308" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">3V3</text>
+<circle cx="616" cy="334" r="3.5" fill="#fff" stroke="#35485a" stroke-width="2"/>
+<circle cx="642" cy="334" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="658" y="340" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">GND</text>
+<text x="719" y="340" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">GND</text>
+<circle cx="616" cy="366" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="642" cy="366" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="658" y="372" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PD8</text>
+<text x="719" y="372" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PB15</text>
+<circle cx="616" cy="398" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="642" cy="398" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="658" y="404" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PD10</text>
+<text x="719" y="404" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PD9</text>
+<circle cx="616" cy="430" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="642" cy="430" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="658" y="436" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PD12</text>
+<text x="719" y="436" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PD11</text>
+<circle cx="616" cy="462" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="642" cy="462" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="658" y="468" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PD14</text>
+<text x="719" y="468" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PD13</text>
+<circle cx="616" cy="494" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="642" cy="494" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="658" y="500" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PC6</text>
+<text x="719" y="500" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PD15</text>
+<circle cx="616" cy="526" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="642" cy="526" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="658" y="532" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PC8</text>
+<text x="719" y="532" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PC7</text>
+<circle cx="616" cy="558" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="642" cy="558" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="658" y="564" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PA8</text>
+<text x="719" y="564" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PC9</text>
+<circle cx="616" cy="590" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="642" cy="590" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="658" y="596" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PA10</text>
+<text x="719" y="596" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PA9</text>
+<circle cx="616" cy="622" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="642" cy="622" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="658" y="628" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PA12</text>
+<text x="719" y="628" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PA11</text>
+<circle cx="616" cy="654" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="642" cy="654" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="658" y="660" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PC10</text>
+<text x="719" y="660" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PA15</text>
+<circle cx="616" cy="686" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="642" cy="686" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="658" y="692" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PC12</text>
+<text x="719" y="692" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PC11</text>
+<circle cx="616" cy="718" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="642" cy="718" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="658" y="724" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PD1</text>
+<text x="719" y="724" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PD0</text>
+<circle cx="616" cy="750" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="642" cy="750" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="658" y="756" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PD3</text>
+<text x="719" y="756" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PD2</text>
+<circle cx="616" cy="782" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="642" cy="782" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="658" y="788" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PD5</text>
+<text x="719" y="788" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PD4</text>
+<circle cx="616" cy="814" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="642" cy="814" r="5" fill="#fff" stroke="#006c68" stroke-width="2"/>
+<text x="658" y="820" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PD7</text>
+<text x="719" y="820" font-size="15" style="fill:#fff" font-weight="700" text-anchor="start" class="pin">PD6</text>
+<circle cx="616" cy="846" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="642" cy="846" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="658" y="852" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PB5</text>
+<text x="719" y="852" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PB3</text>
+<circle cx="616" cy="878" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="642" cy="878" r="5" fill="#fff" stroke="#a2500d" stroke-width="2"/>
+<text x="658" y="884" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PB7</text>
+<text x="719" y="884" font-size="15" style="fill:#fff" font-weight="700" text-anchor="start" class="pin">PB6</text>
+<circle cx="616" cy="910" r="5" fill="#fff" stroke="#175a94" stroke-width="2"/>
+<circle cx="642" cy="910" r="5" fill="#fff" stroke="#175a94" stroke-width="2"/>
+<text x="658" y="916" font-size="15" style="fill:#fff" font-weight="700" text-anchor="start" class="pin">PB9</text>
+<text x="719" y="916" font-size="15" style="fill:#fff" font-weight="700" text-anchor="start" class="pin">PB8</text>
+<circle cx="616" cy="942" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="642" cy="942" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="658" y="948" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PE1</text>
+<text x="719" y="948" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="start" class="pin">PE0</text>
+<circle cx="1067" cy="270" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="1041" cy="270" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="1024" y="276" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">3V3</text>
+<text x="963" y="276" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">3V3</text>
+<circle cx="1067" cy="302" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="1041" cy="302" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="1024" y="308" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">GND</text>
+<text x="963" y="308" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">GND</text>
+<circle cx="1067" cy="334" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="1041" cy="334" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="1024" y="340" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">GND</text>
+<text x="963" y="340" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">GND</text>
+<circle cx="1067" cy="366" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="1041" cy="366" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="1024" y="372" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">VREF+</text>
+<text x="963" y="372" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">VDDA</text>
+<circle cx="1067" cy="398" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="1041" cy="398" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="1024" y="404" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">PB13</text>
+<text x="963" y="404" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">PB14</text>
+<circle cx="1067" cy="430" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="1041" cy="430" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="1024" y="436" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">PB11</text>
+<text x="963" y="436" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">PB12</text>
+<circle cx="1067" cy="462" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="1041" cy="462" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="1024" y="468" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">PE15</text>
+<text x="963" y="468" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">PB10</text>
+<circle cx="1067" cy="494" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="1041" cy="494" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="1024" y="500" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">PE13</text>
+<text x="963" y="500" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">PE14</text>
+<circle cx="1067" cy="526" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="1041" cy="526" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="1024" y="532" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">PE11</text>
+<text x="963" y="532" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">PE12</text>
+<circle cx="1067" cy="558" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="1041" cy="558" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="1024" y="564" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">PE9</text>
+<text x="963" y="564" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">PE10</text>
+<circle cx="1067" cy="590" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="1041" cy="590" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="1024" y="596" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">PE7</text>
+<text x="963" y="596" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">PE8</text>
+<circle cx="1067" cy="622" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="1041" cy="622" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="1024" y="628" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">PB0</text>
+<text x="963" y="628" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">PB1</text>
+<circle cx="1067" cy="654" r="5" fill="#fff" stroke="#a2500d" stroke-width="2"/>
+<circle cx="1041" cy="654" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="1024" y="660" font-size="15" style="fill:#fff" font-weight="700" text-anchor="end" class="pin">PC4</text>
+<text x="963" y="660" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">PC5</text>
+<circle cx="1067" cy="686" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="1041" cy="686" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="1024" y="692" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">PA6</text>
+<text x="963" y="692" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">PA7</text>
+<circle cx="1067" cy="718" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="1041" cy="718" r="5" fill="#fff" stroke="#27734d" stroke-width="2"/>
+<text x="1024" y="724" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">PA4</text>
+<text x="963" y="724" font-size="15" style="fill:#fff" font-weight="700" text-anchor="end" class="pin">PA5</text>
+<circle cx="1067" cy="750" r="5" fill="#fff" stroke="#006c68" stroke-width="2"/>
+<circle cx="1041" cy="750" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="1024" y="756" font-size="15" style="fill:#fff" font-weight="700" text-anchor="end" class="pin">PA2</text>
+<text x="963" y="756" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">PA3</text>
+<circle cx="1067" cy="782" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="1041" cy="782" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="1024" y="788" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">PA0</text>
+<text x="963" y="788" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">PA1</text>
+<circle cx="1067" cy="814" r="5" fill="#fff" stroke="#68439c" stroke-width="2"/>
+<circle cx="1041" cy="814" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="1024" y="820" font-size="15" style="fill:#fff" font-weight="700" text-anchor="end" class="pin">PC2</text>
+<text x="963" y="820" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">PC3</text>
+<circle cx="1067" cy="846" r="5" fill="#fff" stroke="#27734d" stroke-width="2"/>
+<circle cx="1041" cy="846" r="5" fill="#fff" stroke="#68439c" stroke-width="2"/>
+<text x="1024" y="852" font-size="15" style="fill:#fff" font-weight="700" text-anchor="end" class="pin">PC0</text>
+<text x="963" y="852" font-size="15" style="fill:#fff" font-weight="700" text-anchor="end" class="pin">PC1</text>
+<circle cx="1067" cy="878" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="1041" cy="878" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="1024" y="884" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">PE6</text>
+<text x="963" y="884" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">PC13</text>
+<circle cx="1067" cy="910" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="1041" cy="910" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="1024" y="916" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">PE4</text>
+<text x="963" y="916" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">PE5</text>
+<circle cx="1067" cy="942" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="1041" cy="942" r="3.5" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<text x="1024" y="948" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">PE2</text>
+<text x="963" y="948" font-size="15" style="fill:#b5ced2" font-weight="400" text-anchor="end" class="pin">PE3</text>
+<circle cx="900" cy="202" r="5" fill="#fff" stroke="#35485a" stroke-width="2"/>
+<text x="900" y="222" font-size="12" style="fill:#dfedf4" font-weight="700" text-anchor="middle" class="pin">BT0</text>
+<circle cx="932" cy="202" r="5" fill="#fff" stroke="#35485a" stroke-width="2"/>
+<text x="932" y="222" font-size="12" style="fill:#dfedf4" font-weight="700" text-anchor="middle" class="pin">3V3</text>
+<circle cx="964" cy="202" r="5" fill="#fff" stroke="#35485a" stroke-width="2"/>
+<text x="964" y="222" font-size="12" style="fill:#dfedf4" font-weight="700" text-anchor="middle" class="pin">GND</text>
+<circle cx="996" cy="202" r="5" fill="#fff" stroke="#6945a5" stroke-width="2"/>
+<text x="996" y="222" font-size="12" style="fill:#dfedf4" font-weight="700" text-anchor="middle" class="pin">DIO</text>
+<circle cx="1028" cy="202" r="5" fill="#fff" stroke="#6945a5" stroke-width="2"/>
+<text x="1028" y="222" font-size="12" style="fill:#dfedf4" font-weight="700" text-anchor="middle" class="pin">CLK</text>
+<rect x="889" y="129" width="293" height="46" rx="12" fill="#fff" stroke="#bdcdd9"/>
+<text x="910" y="158" font-size="20" style="fill:#142b3e" font-weight="700" text-anchor="start" class="">ST-Link V2.1 · USB</text>
+<polyline points="964,176 964,196" stroke="#35485a" class="wire"/>
+<polyline points="996,176 996,196" stroke="#6945a5" class="wire"/>
+<polyline points="1028,176 1028,196" stroke="#6945a5" class="wire"/>
+<text x="1198" y="159" font-size="17" style="fill:#496075" font-weight="400" text-anchor="start" class="">GND / SWDIO / SWCLK</text>
+<text x="1198" y="186" font-size="16" style="fill:#496075" font-weight="400" text-anchor="start" class="">烧录器电源输出留空</text>
+<rect x="158" y="921" width="198" height="284" rx="13" fill="#173447" stroke="#173447"/>
+<rect x="196" y="932" width="122" height="43" rx="5" fill="#285164" stroke="#71929b"/>
+<text x="257" y="960" font-size="18" style="fill:#e3f1f4" font-weight="400" text-anchor="middle" class="">Wi-Fi 天线</text>
+<text x="257" y="1009" font-size="22" style="fill:#fff" font-weight="700" text-anchor="middle" class="pin">NodeMCU-32S</text>
+<text x="257" y="1037" font-size="17" style="fill:#cbdbe4" font-weight="400" text-anchor="middle" class="">ESP32 网关</text>
+<circle cx="158" cy="1002" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="356" cy="1002" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="158" cy="1012" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="356" cy="1012" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="158" cy="1022" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="356" cy="1022" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="158" cy="1032" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="356" cy="1032" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="158" cy="1042" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="356" cy="1042" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="158" cy="1052" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="356" cy="1052" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="158" cy="1062" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="356" cy="1062" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="158" cy="1072" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="356" cy="1072" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="158" cy="1082" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="356" cy="1082" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="158" cy="1092" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="356" cy="1092" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="158" cy="1102" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="356" cy="1102" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="158" cy="1112" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="356" cy="1112" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="158" cy="1122" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="356" cy="1122" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="158" cy="1132" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="356" cy="1132" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="158" cy="1142" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="356" cy="1142" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="158" cy="1152" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="356" cy="1152" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="158" cy="1162" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="356" cy="1162" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="158" cy="1172" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="356" cy="1172" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="158" cy="1182" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="356" cy="1182" r="2.7" fill="#fff" stroke="#b4c6aa" stroke-width="2"/>
+<circle cx="158" cy="1082" r="6" fill="#fff" stroke="#006c68" stroke-width="2"/>
+<text x="172" y="1088" font-size="16" style="fill:#fff" font-weight="700" text-anchor="start" class="pin">P25 / TX</text>
+<circle cx="356" cy="1112" r="6" fill="#fff" stroke="#006c68" stroke-width="2"/>
+<text x="343" y="1118" font-size="16" style="fill:#fff" font-weight="700" text-anchor="end" class="pin">P16 / RX</text>
+<circle cx="356" cy="1002" r="5.5" fill="#fff" stroke="#35485a" stroke-width="2"/>
+<rect x="374" y="988" width="78" height="27" rx="6" fill="#fff" stroke="#35485a"/>
+<text x="413.0" y="1007" font-size="15" style="fill:#35485a" font-weight="700" text-anchor="middle" class="pin">GND</text>
+<polyline points="356,1002 374,1002" stroke="#35485a" class="wire"/>
+<rect x="229" y="1196" width="55" height="16" rx="5" fill="#cadde4" stroke="#526979"/>
+<text x="257" y="1241" font-size="17" style="fill:#496075" font-weight="700" text-anchor="middle" class="">USB 朝下</text>
+<text x="63" y="872" font-size="17" style="fill:#006c68" font-weight="700" text-anchor="start" class="pin">ESP32 GPIO25 → STM32 PD6</text>
+<text x="570" y="1257" font-size="17" style="fill:#006c68" font-weight="700" text-anchor="start" class="pin">STM32 PA2 → ESP32 GPIO16</text>
+<text x="1240" y="774" font-size="16" style="fill:#006c68" font-weight="700" text-anchor="start" class="">UART 上报</text>
+<text x="433" y="188" font-size="16" style="fill:#496075" font-weight="400" text-anchor="start" class="">两块板与 ST-Link</text>
+<text x="433" y="212" font-size="16" style="fill:#496075" font-weight="400" text-anchor="start" class="">各自接电脑 USB</text>
+<circle cx="433" cy="539" r="6" fill="#fff" stroke="#a2500d" stroke-width="2"/>
+<text x="417" y="546" font-size="19" style="fill:#a2500d" font-weight="700" text-anchor="end" class="pin">PWM</text>
+<circle cx="433" cy="759" r="6" fill="#fff" stroke="#175a94" stroke-width="2"/>
+<text x="417" y="766" font-size="19" style="fill:#175a94" font-weight="700" text-anchor="end" class="pin">SCL</text>
+<circle cx="433" cy="801" r="6" fill="#fff" stroke="#175a94" stroke-width="2"/>
+<text x="417" y="808" font-size="19" style="fill:#175a94" font-weight="700" text-anchor="end" class="pin">SDA</text>
+<circle cx="1371" cy="382" r="6" fill="#fff" stroke="#a2500d" stroke-width="2"/>
+<text x="1387" y="389" font-size="19" style="fill:#a2500d" font-weight="700" text-anchor="start" class="pin">GPIO</text>
+<circle cx="1371" cy="606" r="6" fill="#fff" stroke="#27734d" stroke-width="2"/>
+<text x="1387" y="613" font-size="19" style="fill:#27734d" font-weight="700" text-anchor="start" class="pin">AO</text>
+<circle cx="1371" cy="928" r="6" fill="#fff" stroke="#27734d" stroke-width="2"/>
+<text x="1387" y="935" font-size="19" style="fill:#27734d" font-weight="700" text-anchor="start" class="pin">DATA</text>
+<circle cx="1371" cy="1127" r="6" fill="#fff" stroke="#68439c" stroke-width="2"/>
+<text x="1387" y="1134" font-size="19" style="fill:#68439c" font-weight="700" text-anchor="start" class="pin">VRy</text>
+<circle cx="1371" cy="1163" r="6" fill="#fff" stroke="#68439c" stroke-width="2"/>
+<text x="1387" y="1170" font-size="19" style="fill:#68439c" font-weight="700" text-anchor="start" class="pin">SW</text>
+<rect x="51" y="1277" width="1737" height="45" rx="8" fill="#e8f0f5" stroke="none"/>
+<text x="71" y="1305" font-size="18" style="fill:#142b3e" font-weight="400" text-anchor="start" class="">信号线通常用母对母杜邦线。SG90 原装母座用公对母转接。相同电源标签接同一排，外部 5 V 正极只接驱动板和舵机。</text>
+</svg>
