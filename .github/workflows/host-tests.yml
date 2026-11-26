@@ -33,6 +33,7 @@ jobs:
           flags=(-std=c11 -Wall -Wextra -Werror -O2 -I "$inc")
           gcc "${flags[@]}" Tests/wire_test.c "$src/edge_wire.c" -o "$RUNNER_TEMP/wire-test"
           gcc "${flags[@]}" Tests/home_control_test.c "$src/edge_home.c" -o "$RUNNER_TEMP/home-control-test"
+          gcc "${flags[@]}" Tests/settings_test.c "$src/edge_settings.c" "$src/edge_wire.c" -o "$RUNNER_TEMP/settings-test"
           gcc "${flags[@]}" Tests/oled_ui_test.c "$src/edge_oled_ui.c" "$src/edge_home.c" -o "$RUNNER_TEMP/oled-ui-test"
           gcc "${flags[@]}" -I ESP32/main $(pkg-config --cflags libcjson) \
             Tests/thingsboard_codec_test.c ESP32/main/gateway_home_codec.c \
@@ -40,6 +41,7 @@ jobs:
           "$RUNNER_TEMP/wire-test"
           "$RUNNER_TEMP/home-control-test"
           "$RUNNER_TEMP/oled-ui-test"
+          "$RUNNER_TEMP/settings-test"
           "$RUNNER_TEMP/thingsboard-codec-test"
       - name: Test the ThingsBoard widget
         run: node Tests/thingsboard_widget_test.js
